@@ -21,7 +21,7 @@ server:
 
 el-opu-carsup:
   api-properties:
-    iaai-url: https://www.iaai.com/Search?url=3CI%2fQobK28lZvU%2fwRJY%2fS%2bJaazZ19BjZQgcLhdTh81o%3d
+    iaai-url: https://www.iaai.com
     second-url: https://auto.ria.com/car/used/
   schedule:
-    cron: 0 0 * * * *
+    cron: 0 */2 * * * *

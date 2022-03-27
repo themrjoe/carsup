@@ -12,6 +12,6 @@ public class ApiScheduledJob {
 
     @Scheduled(cron = "${el-opu-carsup.schedule.cron}")
     public void job() {
-
+        apiScenario.getCars();
     }
 }
