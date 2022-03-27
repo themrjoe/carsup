@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.1'
     implementation 'io.github.openfeign:feign-core:11.8'
     implementation 'io.github.openfeign:feign-jackson:11.8'

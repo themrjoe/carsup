@@ -1,1 +1,27 @@
+---
+spring:
+  main:
+    banner-mode: 'OFF'
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/carsup
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 
+server:
+  port: 8081
+
+el-opu-carsup:
+  api-properties:
+    iaai-url: https://www.iaai.com/Search?url=3CI%2fQobK28lZvU%2fwRJY%2fS%2bJaazZ19BjZQgcLhdTh81o%3d
+    second-url: https://auto.ria.com/car/used/
+  schedule:
+    cron: 0 0 * * * *

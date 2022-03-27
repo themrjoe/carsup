@@ -4,9 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 public interface RetrieverClient {
 
-    @GetMapping(path = "/getMainPage")
+    @GetMapping(path = "/")
     String getIaaiPage();
-
-    @GetMapping(path = "/getItemPage")
-    String getItemPage();
 }
