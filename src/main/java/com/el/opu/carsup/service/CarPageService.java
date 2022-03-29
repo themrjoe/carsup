@@ -24,6 +24,10 @@ public class CarPageService {
         carPageRepository.save(carPageInfo);
     }
 
+    public boolean ifExists(CarPageInfo carPageInfo) {
+        return carPageRepository.getCarPageInfoByUrl(carPageInfo.getUrl()).isPresent();
+    }
+
     public List<CarPageInfo> getAll() {
         return carPageRepository.findAll();
     }

@@ -19,4 +19,12 @@ public class CarService {
     public List<Car> getAllCars() {
         return carRepository.findAll();
     }
+
+    public void saveCar(Car car) {
+        carRepository.save(car);
+    }
+
+    public boolean ifExists(Car car) {
+        return carRepository.getCarByLotNumber(car.getLotNumber()).isPresent();
+    }
 }

@@ -37,9 +37,10 @@ public class ApiScenario {
             return;
         }
 
-        List<String> carInfo = apiService.getCarInfo(infos.stream()
+        List<String> listLinks = apiService.getCarInfo(infos.stream()
                 .map(CarPageInfo::getUrl)
                 .collect(Collectors.toList()));
 
+        listLinks.forEach(parser::parseCarPage);
     }
 }
