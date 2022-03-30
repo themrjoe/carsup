@@ -3,16 +3,13 @@ package com.el.opu.carsup.configuration;
 import com.el.opu.carsup.api.RetrieverClient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;
 import feign.Util;
 import feign.codec.Decoder;
-import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import feign.slf4j.Slf4jLogger;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +47,5 @@ public class TrackingConfiguration {
         return new JacksonEncoder(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .configure(SerializationFeature.INDENT_OUTPUT, true)
                 .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true));
-    }
-
-    @NotNull
-    public Decoder feignDecoder() {
-        return (response, type) -> {
-            String bodyStr = Util.toString(response.body().asReader(Util.UTF_8));
-            JavaType javaType = TypeFactory.defaultInstance().constructType(type);
-            return new ObjectMapper().readValue(bodyStr, javaType);
-        };
     }
 }

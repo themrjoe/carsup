@@ -1,11 +1,21 @@
 package com.el.opu.carsup.service.resolver;
 
+import com.el.opu.carsup.utils.CarsupConstants;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +46,51 @@ public class FieldResolver {
     }
 
     public String resolvePrice(String price) {
+        if (StringUtils.isEmpty(price)) {
+            return null;
+        }
         return price.substring(1).replace(",", "");
     }
 
     public String resolveOdometerValue(String odometer) {
-        return odometer.replaceAll("[^\\d]","");
+        if (StringUtils.isEmpty(odometer)) {
+            return null;
+        }
+        return odometer.replaceAll("[^\\d]", "");
+    }
+
+    public String dateToUkrainianDate(String date) {
+        String yearFormatter = "yyyy";
+        String timePattern = "dd.MM.yyyy HH:mm";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(yearFormatter);
+        String month = CarsupConstants.MONTHS.get(date.substring(4, 7));
+        String day = date.substring(date.indexOf(',') - 2, date.indexOf(','));
+        String hours = date.substring(date.indexOf(',') + 2, date.indexOf(':'));
+        String minutes = date.substring(date.indexOf(':') + 1, date.indexOf(':') + 3);
+        String am = date.substring(date.indexOf(':') + 3, date.indexOf(':') + 5);
+        ZoneId timeZoneD = ZoneId.of(CarsupConstants.CDT_TIMEZONE);
+        String year = dateTimeFormatter.format(LocalDateTime.ofInstant(Clock.systemDefaultZone().instant(), ZoneOffset.UTC));
+        if (am.equals("pm")) {
+            int hoursInt = Integer.parseInt(hours) + 12;
+            hours = Integer.toString(hoursInt);
+        } else {
+            if (hours.length() == 1) {
+                hours = "0" + hours;
+            }
+        }
+        dateTimeFormatter = DateTimeFormatter.ofPattern(timePattern);
+        String bufferedTime = day + "." + month + "." + year + " " + hours + ":" + minutes;
+        long timeEpoch = LocalDateTime.parse(bufferedTime, dateTimeFormatter).atZone(timeZoneD).toInstant().toEpochMilli();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(timePattern);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.of(CarsupConstants.UKRAINE_TIMEZONE)));
+        return simpleDateFormat.format(new Date(timeEpoch));
+    }
+
+    public Long dateToMillisInUtc(String date) {
+        if (StringUtils.isEmpty(date)) {
+            return null;
+        }
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return LocalDateTime.parse(date, dateTimeFormatter).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
     }
 }

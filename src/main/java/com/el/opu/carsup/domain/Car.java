@@ -1,12 +1,10 @@
 package com.el.opu.carsup.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -32,4 +30,15 @@ public class Car {
     private String lotNumber;
     private String auctionDate;
     private String buyNowPrice;
+    private String ukrainianDate;
+    private String currentBid;
+    private Long lastModifiedTimestamp;
+    private Long auctionDateMillis;
+    private boolean canBuyNow;
+    private String location;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "url_id")
+    @JsonManagedReference
+    private CarPageInfo url;
 }

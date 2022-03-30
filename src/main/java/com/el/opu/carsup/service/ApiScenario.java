@@ -1,6 +1,7 @@
 package com.el.opu.carsup.service;
 
 import com.el.opu.carsup.api.ApiService;
+import com.el.opu.carsup.api.model.CarLink;
 import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.parser.Parser;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class ApiScenario {
             return;
         }
 
-        List<String> listLinks = apiService.getCarInfo(infos.stream()
+        List<CarLink> listLinks = apiService.getCarInfo(infos.stream()
                 .map(CarPageInfo::getUrl)
                 .collect(Collectors.toList()));
 
