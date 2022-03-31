@@ -5,13 +5,16 @@ import com.el.opu.carsup.api.model.CarLink;
 import com.el.opu.carsup.configuration.ApplicationProperties;
 import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.parser.Parser;
+import com.el.opu.carsup.utils.CarsupConstants;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,25 +28,27 @@ public class ApiScenario {
     private final ApplicationProperties applicationProperties;
 
     public void getCars() {
-        String page = apiService.getInfo();
-        if (StringUtils.isEmpty(page)) {
-            log.warn("Main page is not retrieved");
-            return;
-        }
-        parser.parseMainPage(page);
-        getAllCarsInfo(carPageService.getInfosByLimit(applicationProperties.getQueryLimit()));
+        CarsupConstants.PAGE_LINKS.forEach(link -> {
+            String page = apiService.getInfo(link);
+            if (StringUtils.isEmpty(page)) {
+                log.warn("Main page is not retrieved Page: {}", link);
+                return;
+            }
+            parser.parseMainPage(page);
+        });
     }
 
-    private void getAllCarsInfo(List<CarPageInfo> infos) {
+    public void getAllCarsInfo() {
+        List<CarPageInfo> infos = carPageService.getInfosByLimit(applicationProperties.getQueryLimit());
         if (CollectionUtils.isEmpty(infos)) {
             log.warn("No links for cars is available");
             return;
         }
-
-        List<CarLink> listLinks = apiService.getCarInfo(infos.stream()
-                .map(CarPageInfo::getUrl)
-                .collect(Collectors.toList()));
-
-        listLinks.forEach(parser::parseCarPage);
+        apiService.getCarInfo(infos.stream()
+                        .map(CarPageInfo::getUrl)
+                        .collect(Collectors.toList()))
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(parser::parseCarPage);
     }
 }

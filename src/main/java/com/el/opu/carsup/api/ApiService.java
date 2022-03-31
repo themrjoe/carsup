@@ -19,9 +19,9 @@ public class ApiService {
     private final RetrieverClient retrieverClient;
 
     @Retryable(value = {ApiException.class}, maxAttempts = 4, backoff = @Backoff(delay = 1000, multiplier = 4))
-    public String getInfo() {
+    public String getInfo(String page) {
         try {
-            return retrieverClient.getIaaiPage();
+            return retrieverClient.getIaaiPage(page);
         } catch (Exception e) {
             log.error("Error retrieving page", e);
             return null;

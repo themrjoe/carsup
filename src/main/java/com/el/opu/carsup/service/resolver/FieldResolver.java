@@ -2,6 +2,7 @@ package com.el.opu.carsup.service.resolver;
 
 import com.el.opu.carsup.utils.CarsupConstants;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,52 +15,80 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FieldResolver {
 
     public String resolveBrandName(String title) {
+        if (StringUtils.isBlank(title)) {
+            return null;
+        }
         return title.substring(5);
     }
 
     public String resolveCarYear(String title) {
+        if (StringUtils.isBlank(title)) {
+            return null;
+        }
         return title.subSequence(0, 4).toString();
     }
 
     public String resolveField(Elements uls, String field) {
         Elements li = uls.select("li.data-list__item");
-        return Optional.ofNullable(li).stream()
+        if (CollectionUtils.isEmpty(li)) {
+            return null;
+        }
+        List<Element> elements = Optional.of(li).stream()
                 .flatMap(Elements::stream)
-                .filter(element -> element.select("span.data-list__label").first().text().equals(field))
-                .map(element -> element.select("span.data-list__value").first().text())
-                .findFirst()
-                .orElse(null);
+                .filter(element -> {
+                    if (element.select("span.data-list__label").first() == null || !element.select("span.data-list__label").first().hasText()) {
+                        return false;
+                    }
+                    return element.select("span.data-list__label").first().text().equals(field);
+                })
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(elements)) {
+            return null;
+        }
+        return elements.get(0).text();
     }
 
     public String resolveAuctionDateTime(Elements uls) {
         Elements li = uls.select("li.data-list__item");
+        if (CollectionUtils.isEmpty(li)) {
+            return null;
+        }
         Element href = li.select("a.data-list__value.link").first();
+        if (href == null) {
+            return null;
+        }
         return href.text();
     }
 
     public String resolvePrice(String price) {
-        if (StringUtils.isEmpty(price)) {
+        if (StringUtils.isBlank(price)) {
             return null;
         }
         return price.substring(1).replace(",", "");
     }
 
     public String resolveOdometerValue(String odometer) {
-        if (StringUtils.isEmpty(odometer)) {
+        if (StringUtils.isBlank(odometer)) {
             return null;
         }
         return odometer.replaceAll("[^\\d]", "");
     }
 
     public String dateToUkrainianDate(String date) {
+        if (StringUtils.isBlank(date)) {
+            return null;
+        }
         String yearFormatter = "yyyy";
         String timePattern = "dd.MM.yyyy HH:mm";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(yearFormatter);
@@ -90,7 +119,7 @@ public class FieldResolver {
     }
 
     public Long dateToMillisInUtc(String date) {
-        if (StringUtils.isEmpty(date)) {
+        if (StringUtils.isBlank(date)) {
             return null;
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

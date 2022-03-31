@@ -17,6 +17,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -33,19 +34,18 @@ public class Parser {
 
     public void parseMainPage(String page) {
         Document document = Jsoup.parse(page);
-        Element links = document.select("h4.heading-7.rtl-disabled > a").first();
-        CarPageInfo pageInfo = mapToCarPageInfo(links.attr("href"));
-//        List<CarPageInfo> pages =
-//                links.stream()
-//                        .map(link -> link.attr("href"))
-//                        .map(this::mapToCarPageInfo)
-//                        .collect(Collectors.toList());
-        if (carPageService.ifExists(pageInfo) || limit == TABLE_MAX_LIMIT) {
-            log.warn("Page exists now or limit is reached. Page: {}. Limit: {}", page, limit);
-            return;
-        }
-        carPageService.savePage(pageInfo);
-        limit += 1;
+        Elements links = document.select("h4.heading-7.rtl-disabled > a");
+        links.stream()
+                .map(link -> link.attr("href"))
+                .filter(StringUtils::isNotBlank)
+                .map(this::mapToCarPageInfo)
+                .forEach(carPageInfo -> {
+                    if (limit >= TABLE_MAX_LIMIT) {
+                        return;
+                    }
+                    carPageService.savePage(carPageInfo);
+                    limit += 1;
+                });
     }
 
     public void parseCarPage(CarLink carLink) {

@@ -15,11 +15,18 @@ public class ApiScheduledJob {
     private final ApiScenario apiScenario;
     private final CarService carService;
 
-    @Scheduled(cron = "${el-opu-carsup.schedule.cron}")
-    public void job() {
-        log.info("Starting collecting data");
+    @Scheduled(cron = "${el-opu-carsup.schedule.get-active-lot-links}")
+    public void getLotLinks() {
+        log.info("Starting collecting page links");
         apiScenario.getCars();
-        log.info("All data collected");
+        log.info("All page links collected");
+    }
+
+    @Scheduled(cron = "${el-opu-carsup.schedule.parse-cars}")
+    public void getCarInfo() {
+        log.info("Starting collecting car info");
+        apiScenario.getAllCarsInfo();
+        log.info("All cars was processed");
     }
 
     @Scheduled(cron = "${el-opu-carsup.schedule.clean-up-cron}")

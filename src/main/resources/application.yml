@@ -24,6 +24,7 @@ el-opu-carsup:
     iaai-url: https://www.iaai.com
     second-url: https://auto.ria.com/car/used/
   schedule:
-    cron: 0 */2 * * * *
+    get-active-lot-links: 0 */30 * * * *
+    parse-cars: 0 */10 * * * *
     clean-up-cron: 0 0 12 * * ?
   query-limit: 100
