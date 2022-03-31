@@ -2,6 +2,7 @@ package com.el.opu.carsup.service;
 
 import com.el.opu.carsup.api.ApiService;
 import com.el.opu.carsup.api.model.CarLink;
+import com.el.opu.carsup.configuration.ApplicationProperties;
 import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.parser.Parser;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ApiScenario {
     private final Parser parser;
     private final ApiService apiService;
     private final CarPageService carPageService;
+    private final ApplicationProperties applicationProperties;
 
     public void getCars() {
         String page = apiService.getInfo();
@@ -29,7 +31,7 @@ public class ApiScenario {
             return;
         }
         parser.parseMainPage(page);
-        getAllCarsInfo(carPageService.getAll());
+        getAllCarsInfo(carPageService.getInfosByLimit(applicationProperties.getQueryLimit()));
     }
 
     private void getAllCarsInfo(List<CarPageInfo> infos) {

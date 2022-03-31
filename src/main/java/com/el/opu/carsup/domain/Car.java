@@ -3,7 +3,6 @@ package com.el.opu.carsup.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import javax.persistence.*;
 
 @Data
@@ -37,8 +36,8 @@ public class Car {
     private boolean canBuyNow;
     private String location;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "url_id")
+    @OneToOne(optional = false, fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "url_id", unique = true)
     @JsonManagedReference
     private CarPageInfo url;
 }

@@ -62,7 +62,7 @@ public class Parser {
         if (carService.ifExists(car)) {
             return;
         }
-        carPageService.updatePage(carPageInfo.getId(), car);
+        carPageService.updatePage(carPageInfo, car);
     }
 
     private Car mapToCar(Elements uls, Element title, Elements ulsSecondaryInfo) {

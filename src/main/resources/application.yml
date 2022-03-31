@@ -25,3 +25,5 @@ el-opu-carsup:
     second-url: https://auto.ria.com/car/used/
   schedule:
     cron: 0 */2 * * * *
+    clean-up-cron: 0 0 12 * * ?
+  query-limit: 100

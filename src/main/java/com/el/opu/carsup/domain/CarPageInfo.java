@@ -1,6 +1,7 @@
 package com.el.opu.carsup.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -16,4 +17,6 @@ public class CarPageInfo {
     private Long id;
     private String url;
     private Long lastQueriedTimestamp;
+    @OneToOne(mappedBy = "url", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Car car;
 }

@@ -65,6 +65,9 @@ public class FieldResolver {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(yearFormatter);
         String month = CarsupConstants.MONTHS.get(date.substring(4, 7));
         String day = date.substring(date.indexOf(',') - 2, date.indexOf(','));
+        if (day.startsWith(" ")) {
+            day = day.replace(" ", "0");
+        }
         String hours = date.substring(date.indexOf(',') + 2, date.indexOf(':'));
         String minutes = date.substring(date.indexOf(':') + 1, date.indexOf(':') + 3);
         String am = date.substring(date.indexOf(':') + 3, date.indexOf(':') + 5);

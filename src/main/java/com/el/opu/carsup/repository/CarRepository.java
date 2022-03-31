@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface CarRepository extends JpaRepository<Car, Long> {
 
     Optional<Car> getCarByLotNumber(String lotNumber);
+
+    long deleteAllByAuctionDateMillisLessThan(long timestamp);
 }

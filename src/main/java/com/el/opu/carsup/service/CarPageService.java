@@ -29,10 +29,12 @@ public class CarPageService {
         carPageRepository.saveAndFlush(carPageInfo);
     }
 
-    public void updatePage(Long id, Car car) {
-        CarPageInfo info = carPageRepository.getById(id);
+    public void updatePage(CarPageInfo carPageInfo, Car car) {
+        CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
+        info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
         car.setUrl(info);
         carRepository.save(car);
+        info.setCar(car);
         carPageRepository.save(info);
     }
 
@@ -46,5 +48,9 @@ public class CarPageService {
 
     public List<CarPageInfo> getAll() {
         return carPageRepository.findAll();
+    }
+
+    public List<CarPageInfo> getInfosByLimit(long limit) {
+        return carPageRepository.getCarPageInfos(limit);
     }
 }
