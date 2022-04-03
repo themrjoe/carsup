@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface RetrieverClient {
 
-    @GetMapping(path = "/Search?url={page}", consumes = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(path = "/Search?{page}", consumes = MediaType.TEXT_HTML_VALUE)
     String getIaaiPage(@PathVariable String page);
 
     @GetMapping(path = "/{linkToCar}", consumes = MediaType.TEXT_HTML_VALUE)

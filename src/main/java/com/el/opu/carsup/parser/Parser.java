@@ -49,6 +49,7 @@ public class Parser {
     }
 
     public void parseCarPage(CarLink carLink) {
+        int i = 0;
         Document document = Jsoup.parse(carLink.getHtmlCarDataPage());
         Element title = document.select("h1.heading-2.heading-2-semi.mb-0.rtl-disabled").first();
         Elements uls = document.select("div.tile-body > ul.data-list.data-list--details");
@@ -63,6 +64,7 @@ public class Parser {
             return;
         }
         carPageService.updatePage(carPageInfo, car);
+        i++;
     }
 
     private Car mapToCar(Elements uls, Element title, Elements ulsSecondaryInfo) {

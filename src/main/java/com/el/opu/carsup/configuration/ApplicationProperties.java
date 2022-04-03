@@ -21,4 +21,10 @@ public class ApplicationProperties {
 
     @NotNull
     private Long queryLimit;
+
+    @NotBlank
+    private String jwtTokenSecret;
+
+    @NotNull
+    private Long jwtTokenExpired;
 }

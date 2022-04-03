@@ -4,7 +4,7 @@ spring:
     banner-mode: 'OFF'
   jpa:
     database: POSTGRESQL
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     properties:
@@ -24,7 +24,10 @@ el-opu-carsup:
     iaai-url: https://www.iaai.com
     second-url: https://auto.ria.com/car/used/
   schedule:
-    get-active-lot-links: 0 */30 * * * *
-    parse-cars: 0 */10 * * * *
+    active: true
+    get-active-lot-links: 0 */7 * * * *
+    parse-cars: 0 */1 * * * *
     clean-up-cron: 0 0 12 * * ?
   query-limit: 100
+  jwt-token-secret: carsupjwtapp
+  jwt-token-expired: 36000000

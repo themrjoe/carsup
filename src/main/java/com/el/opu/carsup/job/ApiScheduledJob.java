@@ -4,12 +4,14 @@ import com.el.opu.carsup.service.ApiScenario;
 import com.el.opu.carsup.service.CarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "el.opu.carsup.schedule", value = "active", havingValue = "true")
 public class ApiScheduledJob {
 
     private final ApiScenario apiScenario;

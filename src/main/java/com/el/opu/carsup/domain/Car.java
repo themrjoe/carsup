@@ -1,13 +1,19 @@
 package com.el.opu.carsup.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
 @Accessors(chain = true)
+@EntityListeners(AuditingEntityListener.class)
 public class Car {
 
     @Id
@@ -31,6 +37,7 @@ public class Car {
     private String buyNowPrice;
     private String ukrainianDate;
     private String currentBid;
+    @LastModifiedDate
     private Long lastModifiedTimestamp;
     private Long auctionDateMillis;
     private boolean canBuyNow;
@@ -40,4 +47,8 @@ public class Car {
     @JoinColumn(name = "url_id", unique = true)
     @JsonManagedReference
     private CarPageInfo url;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "cars", fetch = FetchType.LAZY)
+    private List<User> users;
 }
