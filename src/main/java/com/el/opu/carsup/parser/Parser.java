@@ -31,6 +31,7 @@ public class Parser {
     private static final long TABLE_MAX_LIMIT = 4500;
 
     public void parseMainPage(String page) {
+        long count = carPageService.countAll();
         Document document = Jsoup.parse(page);
         Elements links = document.select("h4.heading-7.rtl-disabled > a");
         links.stream()
