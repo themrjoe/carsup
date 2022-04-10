@@ -49,6 +49,6 @@ public class Car {
     private CarPageInfo url;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "cars", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "cars", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<User> users;
 }

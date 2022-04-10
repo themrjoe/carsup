@@ -10,10 +10,12 @@ import com.el.opu.carsup.repository.RoleRepository;
 import com.el.opu.carsup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -27,6 +29,9 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public User register(User user) {
+        if (userRepository.findByUserName(user.getUserName()) != null) {
+            return null;
+        }
         Role role = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(role);
@@ -55,16 +60,36 @@ public class UserService {
         log.info("User with id: {} deleted", id);
     }
 
-    public User addCarToFavourite(FavouriteDto dto) {
-        User user = userRepository.findById(dto.getIdUser()).orElse(null);
+    public void addCarToFavourite(FavouriteDto dto, String username) {
+        User user = userRepository.findByUserName(username);
         Car car = carRepository.findById(dto.getIdCar()).orElse(null);
         if (user == null || car == null) {
             log.warn("User id or car id = null. Cannot add to favourite");
-            return null;
+            return;
         }
         List<Car> userCars = new ArrayList<>();
         userCars.add(car);
         user.setCars(userCars);
-        return userRepository.save(user);
+        userRepository.save(user);
+    }
+
+    public List<Car> getFavouriteCarsForUser(String username) {
+        User user = userRepository.findByUserName(username);
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        return user.getCars();
+    }
+
+    public void deleteFromFavourite(FavouriteDto dto, String username) {
+        User user = userRepository.findByUserName(username);
+        Car car = carRepository.findById(dto.getIdCar()).orElse(null);
+        if (user == null || car == null || CollectionUtils.isEmpty(user.getCars())) {
+            return;
+        }
+        List<Car> cars = user.getCars();
+        cars.remove(car);
+        user.setCars(cars);
+        userRepository.save(user);
     }
 }

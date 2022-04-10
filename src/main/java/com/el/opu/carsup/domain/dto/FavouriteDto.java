@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class FavouriteDto {
 
-    private Long idUser;
     private Long idCar;
 }

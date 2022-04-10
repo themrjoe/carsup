@@ -1,13 +1,11 @@
 package com.el.opu.carsup.service;
 
 import com.el.opu.carsup.api.ApiService;
-import com.el.opu.carsup.api.model.CarLink;
 import com.el.opu.carsup.configuration.ApplicationProperties;
 import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.parser.Parser;
 import com.el.opu.carsup.utils.CarsupConstants;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,11 +41,12 @@ public class ApiScenario {
             log.warn("No links for cars is available");
             return;
         }
-        apiService.getCarInfo(infos.stream()
-                        .map(CarPageInfo::getUrl)
-                        .collect(Collectors.toList()))
-                .stream()
+        infos.stream()
+                .map(CarPageInfo::getUrl)
                 .filter(Objects::nonNull)
+                .map(apiService::getCarInfo)
+                .filter(Objects::nonNull)
+                .filter(carLink -> StringUtils.isNotBlank(carLink.getHtmlCarDataPage()))
                 .forEach(parser::parseCarPage);
     }
 }

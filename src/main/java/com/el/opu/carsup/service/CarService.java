@@ -5,10 +5,12 @@ import com.el.opu.carsup.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Clock;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CarService {
 

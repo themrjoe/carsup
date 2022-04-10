@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;
-import feign.Util;
 import feign.codec.Decoder;
 import feign.jackson.JacksonEncoder;
 import feign.slf4j.Slf4jLogger;

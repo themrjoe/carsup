@@ -59,6 +59,14 @@ public class FieldResolver {
         return elements.get(0).text();
     }
 
+    public String getLotNumber(String text) {
+        if (text.startsWith("Stock #: ")) {
+            return text.substring(9);
+        }
+        return null;
+    }
+
+
     public String resolveAuctionDateTime(Elements uls) {
         Elements li = uls.select("li.data-list__item");
         if (CollectionUtils.isEmpty(li)) {

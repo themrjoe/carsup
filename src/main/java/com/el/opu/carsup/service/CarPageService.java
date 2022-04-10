@@ -20,16 +20,44 @@ public class CarPageService {
     private final CarPageRepository carPageRepository;
     private final CarRepository carRepository;
 
-    public void savePages(List<CarPageInfo> carPageInfos) {
-        carPageRepository.saveAllAndFlush(carPageInfos);
-        log.info("Added {} pages successfully", carPageInfos.size());
-    }
-
     public void savePage(CarPageInfo carPageInfo) {
+        if (ifExists(carPageInfo)) {
+            return;
+        }
         carPageRepository.saveAndFlush(carPageInfo);
     }
 
     public void updatePage(CarPageInfo carPageInfo, Car car) {
+        if (carRepository.getCarByLotNumber(car.getLotNumber()).isPresent()) {
+            Car repoCar = carRepository.getCarByLotNumber(car.getLotNumber()).orElse(null);
+            if (repoCar == null) {
+                return;
+            }
+            repoCar.setBrand(car.getBrand());
+            repoCar.setCarYear(car.getCarYear());
+            repoCar.setModel(car.getModel());
+            repoCar.setSeries(car.getSeries());
+            repoCar.setEngine(car.getEngine());
+            repoCar.setFuelType(car.getFuelType());
+            repoCar.setVehicleType(car.getVehicleType());
+            repoCar.setPrimaryDamage(car.getPrimaryDamage());
+            repoCar.setSecondaryDamage(car.getSecondaryDamage());
+            repoCar.setConditionValue(car.getConditionValue());
+            repoCar.setOdometrValue(car.getOdometrValue());
+            repoCar.setAuctionDate(car.getAuctionDate());
+            repoCar.setBuyNowPrice(car.getBuyNowPrice());
+            repoCar.setUkrainianDate(car.getUkrainianDate());
+            repoCar.setCurrentBid(car.getCurrentBid());
+            repoCar.setLocation(car.getLocation());
+            repoCar.setCanBuyNow(car.isCanBuyNow());
+            repoCar.setAuctionDateMillis(car.getAuctionDateMillis());
+            repoCar.setAuctionName(car.getAuctionName());
+            CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
+            repoCar.setUrl(info);
+            carRepository.save(repoCar);
+            info.setCar(repoCar);
+            carPageRepository.save(info);
+        }
         CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
         info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
         car.setUrl(info);
@@ -46,11 +74,11 @@ public class CarPageService {
         return carPageRepository.getCarPageInfoByUrl(url).orElse(null);
     }
 
-    public List<CarPageInfo> getAll() {
-        return carPageRepository.findAll();
-    }
-
     public List<CarPageInfo> getInfosByLimit(long limit) {
         return carPageRepository.getCarPageInfos(limit);
+    }
+
+    public long countAll() {
+        return carPageRepository.count();
     }
 }

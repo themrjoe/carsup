@@ -17,7 +17,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -29,8 +28,7 @@ public class Parser {
     private final CarService carService;
     private final Clock clock;
 
-    private static final int TABLE_MAX_LIMIT = 4500;
-    private int limit = 0;
+    private static final long TABLE_MAX_LIMIT = 4500;
 
     public void parseMainPage(String page) {
         Document document = Jsoup.parse(page);
@@ -40,31 +38,31 @@ public class Parser {
                 .filter(StringUtils::isNotBlank)
                 .map(this::mapToCarPageInfo)
                 .forEach(carPageInfo -> {
-                    if (limit >= TABLE_MAX_LIMIT) {
+                    if (carPageService.countAll() >= TABLE_MAX_LIMIT) {
                         return;
                     }
                     carPageService.savePage(carPageInfo);
-                    limit += 1;
                 });
     }
 
     public void parseCarPage(CarLink carLink) {
-        int i = 0;
         Document document = Jsoup.parse(carLink.getHtmlCarDataPage());
         Element title = document.select("h1.heading-2.heading-2-semi.mb-0.rtl-disabled").first();
         Elements uls = document.select("div.tile-body > ul.data-list.data-list--details");
         Elements ulsSecondaryInfo = document.select("div.action-area__secondary-info > ul.data-list.data-list--details");
+        if (title == null) {
+            return;
+        }
         Car car = mapToCar(uls, title, ulsSecondaryInfo);
         CarPageInfo carPageInfo = carPageService.getByUrl(carLink.getLink());
         if (carPageInfo == null) {
             return;
         }
         carPageInfo.setLastQueriedTimestamp(clock.instant().toEpochMilli());
-        if (carService.ifExists(car)) {
+        if (StringUtils.isBlank(car.getLotNumber())) {
             return;
         }
         carPageService.updatePage(carPageInfo, car);
-        i++;
     }
 
     private Car mapToCar(Elements uls, Element title, Elements ulsSecondaryInfo) {
@@ -80,7 +78,7 @@ public class Parser {
         car.setSecondaryDamage(resolver.resolveField(uls, CarsupConstants.SECONDARY_DAMAGE));
         car.setConditionValue(resolver.resolveField(uls, CarsupConstants.CONDITION));
         car.setOdometrValue(resolver.resolveOdometerValue(resolver.resolveField(uls, CarsupConstants.ODOMETER)));
-        car.setLotNumber(resolver.resolveField(uls, CarsupConstants.STOCK));
+        car.setLotNumber(resolver.getLotNumber(resolver.resolveField(uls, CarsupConstants.STOCK)));
         car.setAuctionDate(resolver.resolveAuctionDateTime(uls));
         car.setBuyNowPrice(resolver.resolvePrice(resolver.resolveField(ulsSecondaryInfo, CarsupConstants.BUY_NOW_PRICE)));
         car.setUkrainianDate(resolver.dateToUkrainianDate(car.getAuctionDate()));
@@ -89,6 +87,7 @@ public class Parser {
         car.setCanBuyNow(StringUtils.isNotBlank(car.getBuyNowPrice()));
         car.setLastModifiedTimestamp(clock.instant().toEpochMilli());
         car.setAuctionDateMillis(resolver.dateToMillisInUtc(car.getUkrainianDate()));
+        car.setAuctionName("IAAI");
         return car;
     }
 

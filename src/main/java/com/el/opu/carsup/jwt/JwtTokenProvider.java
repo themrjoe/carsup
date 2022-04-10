@@ -60,7 +60,7 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer_")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
@@ -79,5 +79,12 @@ public class JwtTokenProvider {
         return roles.stream()
                 .map(Role::getName)
                 .collect(Collectors.toList());
+    }
+
+    public String resolveTokenFromHeader(String header) {
+        if (StringUtils.isNotBlank(header) && header.startsWith("Bearer_")) {
+            return header.substring(7);
+        }
+        return null;
     }
 }

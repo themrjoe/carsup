@@ -3,12 +3,12 @@ package com.el.opu.carsup.controller;
 import com.el.opu.carsup.domain.User;
 import com.el.opu.carsup.domain.dto.AuthDto;
 import com.el.opu.carsup.domain.dto.AuthResponseDto;
+import com.el.opu.carsup.domain.dto.ResponseDto;
 import com.el.opu.carsup.jwt.JwtTokenProvider;
 import com.el.opu.carsup.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,13 +39,29 @@ public class AuthController {
             AuthResponseDto responseDto = new AuthResponseDto(user.getUserName(), token, user.getEmail());
             return ResponseEntity.ok(responseDto);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            return ResponseEntity.badRequest().body(ResponseDto.builder()
+                    .status(400)
+                    .cause("Invalid username or password")
+                    .success(false)
+                    .build());
         }
     }
 
     @PostMapping("/cars/auth/register")
     @ResponseBody
-    public void register(@RequestBody User user) {
-        userService.register(user);
+    public ResponseEntity register(@RequestBody User user) {
+        User registered = userService.register(user);
+        if (registered == null) {
+            return ResponseEntity.badRequest().body(ResponseDto.builder()
+                    .status(400)
+                    .cause("User with username:" + user.getUserName() + " already exists")
+                    .success(false)
+                    .build());
+        }
+        return ResponseEntity.ok(ResponseDto.builder()
+                .status(200)
+                .cause("User" + user.getUserName() + " registered")
+                .success(true)
+                .build());
     }
 }
