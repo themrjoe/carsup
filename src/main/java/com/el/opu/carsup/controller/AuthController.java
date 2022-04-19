@@ -54,7 +54,7 @@ public class AuthController {
         if (registered == null) {
             return ResponseEntity.badRequest().body(ResponseDto.builder()
                     .status(400)
-                    .cause("User with username:" + user.getUserName() + " already exists")
+                    .cause("User with username: " + user.getUserName() + " already exists")
                     .success(false)
                     .build());
         }
