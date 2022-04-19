@@ -33,6 +33,12 @@ public class EndpointController {
         return carService.getCarById(id);
     }
 
+    @GetMapping(path = "/cars/vehicleTypes")
+    @ResponseBody
+    public List<String> getAllVehicleTypes() {
+        return carService.getAllVehicleTypes();
+    }
+
     @PostMapping(path = "/user/add_to_fav", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void addToFavourite(@RequestBody FavouriteDto dto, @RequestHeader("Authorization") String token) {

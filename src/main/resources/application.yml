@@ -26,7 +26,7 @@ el-opu-carsup:
   schedule:
     active: true
     get-active-lot-links: 0 */40 * * * *
-    parse-cars: 0 */15 * * * *
+    parse-cars: 0 */6 * * * *
     clean-up-cron: 0 0 12 * * ?
   query-limit: 100
   jwt-token-secret: carsupjwtapp

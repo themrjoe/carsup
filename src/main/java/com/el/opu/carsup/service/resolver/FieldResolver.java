@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,6 +86,98 @@ public class FieldResolver {
             return null;
         }
         return price.substring(1).replace(",", "");
+    }
+
+    public String resolveFuelType(String type) {
+        if (StringUtils.startsWith(type, "Fuel Type: ")) {
+            return type.substring(11);
+        }
+        return null;
+    }
+
+    public String resolveLocation(String location) {
+        if (StringUtils.startsWith(location, "Selling Branch: ")) {
+            return location.substring(16);
+        }
+        return null;
+    }
+
+    public String resolveVehicle(String vehicle) {
+        if (StringUtils.startsWith(vehicle, "Vehicle: ")) {
+            return vehicle.substring(9);
+        }
+        return null;
+    }
+
+    public String resolveSeries(String series) {
+        if (StringUtils.startsWith(series, "Series: ")) {
+            return series.substring(8);
+        }
+        return null;
+    }
+
+    public String resolveSecondaryDamage(String secondaryDamage) {
+        if (StringUtils.startsWith(secondaryDamage, "Secondary Damage: ")) {
+            return secondaryDamage.substring(18);
+        }
+        return null;
+    }
+
+    public String resolvePrimaryDamage(String damage) {
+        if (StringUtils.startsWith(damage, "Primary Damage: ")) {
+            String substring = damage.substring(16);
+            StringBuilder result = new StringBuilder();
+            String[] strings = substring.split(" ");
+            for (int i = 0; i < strings.length / 2; i++) {
+                result.append(strings[i]).append(" ");
+            }
+            return result.toString();
+        }
+        return null;
+    }
+
+    public String resolveModel(String model) {
+        if (StringUtils.startsWith(model, "Model: ")) {
+            return model.substring(7);
+        }
+        return null;
+    }
+
+    public String resolveConditionalValue(String value) {
+        if (StringUtils.startsWith(value, "Start Code: ")) {
+            String substring = value.substring(12);
+            StringBuilder result = new StringBuilder();
+            String[] strings = substring.split(" ");
+            for (int i = 0; i < strings.length / 2; i++) {
+                result.append(strings[i]).append(" ");
+            }
+            return result.toString();
+        }
+        return null;
+    }
+
+    public String resolveCurrentBid(String bid) {
+        if (StringUtils.startsWith(bid, "Current Bid: $")) {
+            return bid.substring(14);
+        }
+        return null;
+    }
+
+    public String resolveEngine(String engine) {
+        if (StringUtils.startsWith(engine, "Engine: ")) {
+            return engine.substring(8);
+        }
+        return null;
+    }
+
+    public String resolveBuyNowPrice(String price) {
+        if (StringUtils.isBlank(price)) {
+            return null;
+        }
+        if (StringUtils.startsWith(price, "uy Now Price: $")) {
+            return price.substring(15);
+        }
+        return null;
     }
 
     public String resolveOdometerValue(String odometer) {

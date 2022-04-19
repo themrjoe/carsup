@@ -51,4 +51,7 @@ public class Car {
     @JsonIgnore
     @ManyToMany(mappedBy = "cars", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<User> users;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageLink> imageLinks;
 }

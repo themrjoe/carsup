@@ -25,9 +25,9 @@ el-opu-carsup:
     second-url: https://auto.ria.com/car/used/
   schedule:
     active: true
-    get-active-lot-links: 0 * * * * *
-    parse-cars: 0 0 * * * *
-    clean-up-cron: 0 0 12 * * ?
+    get-active-lot-links: 0 */10 * * * *
+    parse-cars: 0 */1 * * * *
+    clean-up-cron: 0 */50 * * * *
   query-limit: 100
   jwt-token-secret: carsupjwtapp
   jwt-token-expired: 36000000

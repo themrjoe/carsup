@@ -2,8 +2,10 @@ package com.el.opu.carsup.service;
 
 import com.el.opu.carsup.domain.Car;
 import com.el.opu.carsup.domain.CarPageInfo;
+import com.el.opu.carsup.domain.ImageLink;
 import com.el.opu.carsup.repository.CarPageRepository;
 import com.el.opu.carsup.repository.CarRepository;
+import com.el.opu.carsup.repository.ImageLinkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class CarPageService {
 
     private final CarPageRepository carPageRepository;
     private final CarRepository carRepository;
+    private final ImageLinkRepository imageLinkRepository;
 
     public void savePage(CarPageInfo carPageInfo) {
         if (ifExists(carPageInfo)) {
@@ -27,12 +30,14 @@ public class CarPageService {
         carPageRepository.saveAndFlush(carPageInfo);
     }
 
-    public void updatePage(CarPageInfo carPageInfo, Car car) {
+    public void updatePage(CarPageInfo carPageInfo, Car car, List<ImageLink> imageLinks) {
         if (carRepository.getCarByLotNumber(car.getLotNumber()).isPresent()) {
             Car repoCar = carRepository.getCarByLotNumber(car.getLotNumber()).orElse(null);
             if (repoCar == null) {
                 return;
             }
+            imageLinks.forEach(imageLink -> imageLink.setCar(repoCar));
+            repoCar.setImageLinks(imageLinks);
             repoCar.setBrand(car.getBrand());
             repoCar.setCarYear(car.getCarYear());
             repoCar.setModel(car.getModel());
@@ -61,9 +66,11 @@ public class CarPageService {
         CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
         info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
         car.setUrl(info);
+        car.setImageLinks(imageLinks);
         carRepository.save(car);
         info.setCar(car);
         carPageRepository.save(info);
+        imageLinkRepository.saveAllAndFlush(imageLinks);
     }
 
     public boolean ifExists(CarPageInfo carPageInfo) {
