@@ -37,7 +37,12 @@ public class CarPageService {
             if (repoCar == null) {
                 return;
             }
-            imageLinks.forEach(imageLink -> imageLink.setCar(repoCar));
+            ListIterator<ImageLink> iterator = imageLinks.listIterator();
+            while (iterator.hasNext()) {
+                ImageLink imageLink = iterator.next();
+                imageLink.setCar(repoCar);
+                imageLinkRepository.saveAndFlush(imageLink);
+            }
             repoCar.setImageLinks(imageLinks);
             repoCar.setBrand(car.getBrand());
             repoCar.setCarYear(car.getCarYear());
