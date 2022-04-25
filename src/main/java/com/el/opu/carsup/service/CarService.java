@@ -69,4 +69,8 @@ public class CarService {
     public List<String> getAllVehicleTypes() {
         return carRepository.getAllVehicleTypes();
     }
+
+    public List<String> getAllFuelTypes() {
+        return carRepository.getAllFuelTypes();
+    }
 }

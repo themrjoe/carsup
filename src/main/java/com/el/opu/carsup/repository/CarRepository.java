@@ -20,4 +20,7 @@ public interface CarRepository extends PagingAndSortingRepository<Car, Long>, Jp
 
     @Query(value = "SELECT DISTINCT vehicle_type FROM car", nativeQuery = true)
     List<String> getAllVehicleTypes();
+
+    @Query(value = "SELECT DISTINCT fuel_type FROM car", nativeQuery = true)
+    List<String> getAllFuelTypes();
 }

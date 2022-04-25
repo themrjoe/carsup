@@ -45,6 +45,12 @@ public class EndpointController {
         return carService.getAllVehicleTypes();
     }
 
+    @GetMapping(path = "/cars/fuelTypes")
+    @ResponseBody
+    public List<String> getFuelTypes() {
+        return carService.getAllFuelTypes();
+    }
+
     @PostMapping(path = "/user/add_to_fav", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void addToFavourite(@RequestBody FavouriteDto dto, @RequestHeader("Authorization") String token) {
