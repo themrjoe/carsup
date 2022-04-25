@@ -142,6 +142,9 @@ public class FieldResolver {
     }
 
     public String resolveEngineDec(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
         StringBuilder deduplication = new StringBuilder();
         String[] strings = value.split(" ");
         for (int i = 0; i < strings.length / 2; i++) {
