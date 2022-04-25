@@ -102,7 +102,7 @@ public class Parser {
         car.setCarYear(resolver.resolveCarYear(title.text()));
         car.setModel(resolver.resolveModel(resolver.resolveField(uls, CarsupConstants.MODEL)));
         car.setSeries(resolver.resolveSeries(resolver.resolveField(uls, CarsupConstants.SERIES)));
-        car.setEngine(resolver.resolveEngine(resolver.resolveField(uls, CarsupConstants.ENGINE)));
+        car.setEngine(resolver.resolveEngineDec(resolver.resolveEngine(resolver.resolveField(uls, CarsupConstants.ENGINE))));
         car.setFuelType(resolver.resolveFuelType(resolver.resolveField(uls, CarsupConstants.FUEL_TYPE)));
         car.setVehicleType(resolver.resolveVehicle(resolver.resolveField(uls, CarsupConstants.VEHICLE_TYPE)));
         car.setPrimaryDamage(resolver.resolvePrimaryDamage(resolver.resolveField(uls, CarsupConstants.PRIMARY_DAMAGE)));

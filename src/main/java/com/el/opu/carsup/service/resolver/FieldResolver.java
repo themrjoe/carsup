@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -141,6 +139,23 @@ public class FieldResolver {
             return model.substring(7);
         }
         return null;
+    }
+
+    public String resolveEngineDec(String value) {
+        StringBuilder deduplication = new StringBuilder();
+        String[] strings = value.split(" ");
+        for (int i = 0; i < strings.length / 2; i++) {
+            deduplication.append(strings[i]).append(" ");
+        }
+        if (StringUtils.isAlpha(deduplication.toString())) {
+            return null;
+        }
+        String[] s = deduplication.toString().split("\\d{1,}\\W\\d{1}[L]");
+        String result = deduplication.toString();
+        for (String trim : s) {
+            result = result.replace(trim, "");
+        }
+        return result.replace("L", "");
     }
 
     public String resolveConditionalValue(String value) {
