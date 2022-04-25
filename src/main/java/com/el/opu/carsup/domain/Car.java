@@ -2,6 +2,7 @@ package com.el.opu.carsup.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -53,5 +54,6 @@ public class Car {
     private List<User> users;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ImageLink> imageLinks;
 }

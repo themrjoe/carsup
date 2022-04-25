@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.ListIterator;
 
 @Slf4j
 @Service
@@ -66,11 +67,16 @@ public class CarPageService {
         CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
         info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
         car.setUrl(info);
+        ListIterator<ImageLink> iterator = imageLinks.listIterator();
+        while (iterator.hasNext()) {
+            ImageLink imageLink = iterator.next();
+            imageLink.setCar(car);
+            imageLinkRepository.saveAndFlush(imageLink);
+        }
         car.setImageLinks(imageLinks);
         carRepository.save(car);
         info.setCar(car);
         carPageRepository.save(info);
-        imageLinkRepository.saveAllAndFlush(imageLinks);
     }
 
     public boolean ifExists(CarPageInfo carPageInfo) {
