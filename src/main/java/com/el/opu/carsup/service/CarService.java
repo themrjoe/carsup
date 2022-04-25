@@ -7,6 +7,9 @@ import com.el.opu.carsup.repository.CarPageRepository;
 import com.el.opu.carsup.repository.CarRepository;
 import com.el.opu.carsup.repository.ImageLinkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,8 +32,14 @@ public class CarService {
         return carRepository.findById(id).orElse(null);
     }
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll();
+    public List<Car> getAllCars(int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 100);
+        Page<Car> carPage = carRepository.findAll(pageable);
+        return carPage.toList();
+    }
+
+    public long getCountCars() {
+        return carRepository.count();
     }
 
     public void saveCar(Car car) {

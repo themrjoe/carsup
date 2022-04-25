@@ -37,7 +37,6 @@ public class Parser {
     private static final long TABLE_MAX_LIMIT = 1000;
 
     public void parseMainPage(String page) {
-        long count = carPageService.countAll();
         Document document = Jsoup.parse(page);
         Elements links = document.select("h4.heading-7.rtl-disabled > a");
         links.stream()
@@ -55,6 +54,9 @@ public class Parser {
     public void parseCarPage(CarLink carLink) {
         Document document = Jsoup.parse(carLink.getHtmlCarDataPage());
         Element carInfo = document.getElementById("ProductDetailsVM");
+        if (carInfo == null) {
+            return;
+        }
         String infoJson = carInfo.data();
         infoJson = infoJson.substring(6).replace("$", "");
         CarDto carDto = null;
@@ -91,7 +93,7 @@ public class Parser {
             ImageLink imageLink = new ImageLink();
             imageLink.setLink(value.getUrl());
             return imageLink;
-        }).collect(Collectors.toList());
+        }).limit(5).collect(Collectors.toList());
     }
 
     private Car mapToCar(Elements uls, Element title, Elements ulsSecondaryInfo) {

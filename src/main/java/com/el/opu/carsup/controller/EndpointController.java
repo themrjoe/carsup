@@ -23,8 +23,14 @@ public class EndpointController {
 
     @GetMapping(path = "/cars/all")
     @ResponseBody
-    public List<Car> getAllCars() {
-        return carService.getAllCars();
+    public List<Car> getAllCars(@RequestParam int pageNo) {
+        return carService.getAllCars(pageNo);
+    }
+
+    @GetMapping(path = "/cars/count")
+    @ResponseBody
+    public long getCountCars() {
+        return carService.getCountCars();
     }
 
     @GetMapping(path = "/cars/{id}")
