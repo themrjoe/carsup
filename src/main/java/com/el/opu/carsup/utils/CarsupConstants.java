@@ -26,7 +26,6 @@ public final class CarsupConstants {
 
     public static final String CDT_TIMEZONE = "America/Chicago";
     public static final String UKRAINE_TIMEZONE = "Europe/Kiev";
-
     public static final Map<String, String> MONTHS = Map.ofEntries(
             entry("Jan", "01"),
             entry("Feb", "02"),
