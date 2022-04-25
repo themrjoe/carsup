@@ -34,7 +34,7 @@ public class Parser {
     private final Clock clock;
     private final ObjectMapper objectMapper;
 
-    private static final long TABLE_MAX_LIMIT = 4500;
+    private static final long TABLE_MAX_LIMIT = 1000;
 
     public void parseMainPage(String page) {
         long count = carPageService.countAll();
