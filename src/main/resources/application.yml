@@ -1,1 +1,33 @@
+---
+spring:
+  main:
+    banner-mode: 'OFF'
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://ec2-52-18-116-67.eu-west-1.compute.amazonaws.com:5432/db2vm2s1sapeb0
+    username: gtcdkovgosqszn
+    password: 7fdda280c9c6a729c2805a4baf2c48c1a581c4422d29e416ebf3966776b4dd7c
+    driver-class-name: org.postgresql.Driver
 
+server:
+  port: 8082
+
+el-opu-carsup:
+  api-properties:
+    iaai-url: https://www.iaai.com
+    second-url: https://auto.ria.com/car/used/
+  schedule:
+    active: true
+    get-active-lot-links: 0 */40 * * * *
+    parse-cars: 0 */6 * * * *
+    clean-up-cron: 0 0 12 * * ?
+  query-limit: 100
+  jwt-token-secret: carsupjwtapp
+  jwt-token-expired: 36000000
