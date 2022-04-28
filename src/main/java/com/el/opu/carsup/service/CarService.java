@@ -93,6 +93,7 @@ public class CarService {
     }
 
     public long cleanDb() {
+        List<User> userList = userRepository.findAll();
         List<Car> carToDelete = carRepository.findAllByAuctionDateMillisLessThan(clock.instant().toEpochMilli());
         List<CarPageInfo> infosToDelete = carToDelete.stream()
                 .map(Car::getUrl)

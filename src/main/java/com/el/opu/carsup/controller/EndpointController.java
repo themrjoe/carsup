@@ -59,7 +59,7 @@ public class EndpointController {
     @PostMapping(path = "/user/add_to_fav", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public CarFavouriteDto addToFavourite(@RequestBody FavouriteDto dto, @RequestHeader("Authorization") String token) {
-        return  userService.addCarToFavourite(dto, resolveUsernameByToken(token));
+        return userService.addCarToFavourite(dto, resolveUsernameByToken(token));
     }
 
     @GetMapping(path = "/user/get_fav")
