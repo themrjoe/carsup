@@ -12,6 +12,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -38,17 +40,19 @@ public class CarPageService {
             if (repoCar == null) {
                 return;
             }
+            List<ImageLink> finalLinks = new ArrayList<>();
             ListIterator<ImageLink> iterator = imageLinks.listIterator();
             while (iterator.hasNext()) {
                 ImageLink imageLink = iterator.next();
                 imageLink.setCar(repoCar);
                 if (!imageLinkRepository.findByLink(imageLink.getLink()).isPresent()){
                     imageLinkRepository.saveAndFlush(imageLink);
-                } else {
-                    imageLinks.remove(imageLink);
+                    finalLinks.add(imageLink);
                 }
             }
-            repoCar.setImageLinks(imageLinks);
+            if (CollectionUtils.isNotEmpty(finalLinks)){
+                repoCar.setImageLinks(finalLinks);
+            }
             repoCar.setBrand(car.getBrand());
             repoCar.setCarYear(car.getCarYear());
             repoCar.setModel(car.getModel());
@@ -78,19 +82,17 @@ public class CarPageService {
         CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
         info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
         car.setUrl(info);
+        List<ImageLink> finalLinks = new ArrayList<>();
         ListIterator<ImageLink> iterator = imageLinks.listIterator();
         while (iterator.hasNext()) {
             ImageLink imageLink = iterator.next();
             imageLink.setCar(car);
             if (!imageLinkRepository.findByLink(imageLink.getLink()).isPresent()){
                 imageLinkRepository.saveAndFlush(imageLink);
-            } else {
-                imageLinks.remove(imageLink);
+                finalLinks.add(imageLink);
             }
         }
-        if (CollectionUtils.isNotEmpty(imageLinks)){
-            car.setImageLinks(imageLinks);
-        }
+        car.setImageLinks(finalLinks);
         carRepository.save(car);
         info.setCar(car);
         carPageRepository.save(info);
