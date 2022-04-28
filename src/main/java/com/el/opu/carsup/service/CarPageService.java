@@ -8,6 +8,7 @@ import com.el.opu.carsup.repository.CarRepository;
 import com.el.opu.carsup.repository.ImageLinkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,7 +42,11 @@ public class CarPageService {
             while (iterator.hasNext()) {
                 ImageLink imageLink = iterator.next();
                 imageLink.setCar(repoCar);
-                imageLinkRepository.saveAndFlush(imageLink);
+                if (!imageLinkRepository.findByLink(imageLink.getLink()).isPresent()){
+                    imageLinkRepository.saveAndFlush(imageLink);
+                } else {
+                    imageLinks.remove(imageLink);
+                }
             }
             repoCar.setImageLinks(imageLinks);
             repoCar.setBrand(car.getBrand());
@@ -68,6 +73,7 @@ public class CarPageService {
             carRepository.save(repoCar);
             info.setCar(repoCar);
             carPageRepository.save(info);
+            return;
         }
         CarPageInfo info = carPageRepository.getById(carPageInfo.getId());
         info.setLastQueriedTimestamp(carPageInfo.getLastQueriedTimestamp());
@@ -76,9 +82,15 @@ public class CarPageService {
         while (iterator.hasNext()) {
             ImageLink imageLink = iterator.next();
             imageLink.setCar(car);
-            imageLinkRepository.saveAndFlush(imageLink);
+            if (!imageLinkRepository.findByLink(imageLink.getLink()).isPresent()){
+                imageLinkRepository.saveAndFlush(imageLink);
+            } else {
+                imageLinks.remove(imageLink);
+            }
         }
-        car.setImageLinks(imageLinks);
+        if (CollectionUtils.isNotEmpty(imageLinks)){
+            car.setImageLinks(imageLinks);
+        }
         carRepository.save(car);
         info.setCar(car);
         carPageRepository.save(info);

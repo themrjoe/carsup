@@ -5,6 +5,7 @@ import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.domain.ImageLink;
 import com.el.opu.carsup.domain.User;
 import com.el.opu.carsup.domain.dto.CarFavouriteDto;
+import com.el.opu.carsup.domain.dto.ImgLinkDto;
 import com.el.opu.carsup.repository.CarPageRepository;
 import com.el.opu.carsup.repository.CarRepository;
 import com.el.opu.carsup.repository.ImageLinkRepository;
@@ -72,7 +73,7 @@ public class CarService {
                 .canBuyNow(car.isCanBuyNow())
                 .location(car.getLocation())
                 .url(car.getUrl().getUrl())
-                .links(car.getImageLinks().stream().map(ImageLink::getLink).collect(Collectors.toList()))
+                .links(car.getImageLinks().stream().map(this::mapToImgLinkDto).collect(Collectors.toList()))
                 .isFavForUser(favouriteForUser)
                 .build();
     }
@@ -117,5 +118,12 @@ public class CarService {
 
     public List<String> getAllFuelTypes() {
         return carRepository.getAllFuelTypes();
+    }
+
+    private ImgLinkDto mapToImgLinkDto(ImageLink imageLink) {
+        ImgLinkDto imgLinkDto = new ImgLinkDto();
+        imgLinkDto.setId(imageLink.getId());
+        imgLinkDto.setLink(imageLink.getLink());
+        return imgLinkDto;
     }
 }

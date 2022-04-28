@@ -31,6 +31,6 @@ public class CarFavouriteDto {
     private boolean canBuyNow;
     private String location;
     private String url;
-    private List<String> links;
+    private List<ImgLinkDto> links;
     private boolean isFavForUser;
 }
