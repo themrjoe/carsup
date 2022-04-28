@@ -70,7 +70,7 @@ public class EndpointController {
 
     @DeleteMapping(path = "/user/delete_from_fav")
     @ResponseBody
-    public void deleteCarFromFavourite(@RequestHeader("Authorization") String token, FavouriteDto dto) {
+    public void deleteCarFromFavourite(@RequestHeader("Authorization") String token, @RequestBody FavouriteDto dto) {
         userService.deleteFromFavourite(dto, resolveUsernameByToken(token));
     }
 
