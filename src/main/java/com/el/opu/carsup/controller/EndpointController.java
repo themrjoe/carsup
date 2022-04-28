@@ -38,7 +38,7 @@ public class EndpointController {
     @GetMapping(path = "/cars/{id}")
     @ResponseBody
     public CarFavouriteDto getCarById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             return carService.getCarById(id, "");
         }
         return carService.getCarById(id, resolveUsernameByToken(token));
@@ -58,8 +58,8 @@ public class EndpointController {
 
     @PostMapping(path = "/user/add_to_fav", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void addToFavourite(@RequestBody FavouriteDto dto, @RequestHeader("Authorization") String token) {
-        userService.addCarToFavourite(dto, resolveUsernameByToken(token));
+    public CarFavouriteDto addToFavourite(@RequestBody FavouriteDto dto, @RequestHeader("Authorization") String token) {
+        return  userService.addCarToFavourite(dto, resolveUsernameByToken(token));
     }
 
     @GetMapping(path = "/user/get_fav")
@@ -70,8 +70,8 @@ public class EndpointController {
 
     @DeleteMapping(path = "/user/delete_from_fav")
     @ResponseBody
-    public void deleteCarFromFavourite(@RequestHeader("Authorization") String token, @RequestBody FavouriteDto dto) {
-        userService.deleteFromFavourite(dto, resolveUsernameByToken(token));
+    public CarFavouriteDto deleteCarFromFavourite(@RequestHeader("Authorization") String token, @RequestBody FavouriteDto dto) {
+        return userService.deleteFromFavourite(dto, resolveUsernameByToken(token));
     }
 
     private String resolveUsernameByToken(String token) {

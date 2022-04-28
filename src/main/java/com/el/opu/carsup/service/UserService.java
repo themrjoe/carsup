@@ -4,6 +4,7 @@ import com.el.opu.carsup.domain.Car;
 import com.el.opu.carsup.domain.Role;
 import com.el.opu.carsup.domain.Status;
 import com.el.opu.carsup.domain.User;
+import com.el.opu.carsup.domain.dto.CarFavouriteDto;
 import com.el.opu.carsup.domain.dto.FavouriteDto;
 import com.el.opu.carsup.repository.CarRepository;
 import com.el.opu.carsup.repository.RoleRepository;
@@ -25,6 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CarRepository carRepository;
+    private final CarService carService;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -60,17 +62,28 @@ public class UserService {
         log.info("User with id: {} deleted", id);
     }
 
-    public void addCarToFavourite(FavouriteDto dto, String username) {
+    public CarFavouriteDto addCarToFavourite(FavouriteDto dto, String username) {
         User user = userRepository.findByUserName(username);
         Car car = carRepository.findById(dto.getIdCar()).orElse(null);
         if (user == null || car == null) {
             log.warn("User id or car id = null. Cannot add to favourite");
-            return;
+            return null;
+        }
+        if (CollectionUtils.isEmpty(user.getCars())) {
+            List<Car> cars = new ArrayList<>();
+            cars.add(car);
+            user.setCars(cars);
+            userRepository.save(user);
+            return carService.getCarById(dto.getIdCar(), username);
         }
         List<Car> userCars = new ArrayList<>();
+        if (userCars.contains(car)) {
+            return null;
+        }
         userCars.add(car);
         user.setCars(userCars);
         userRepository.save(user);
+        return carService.getCarById(dto.getIdCar(), username);
     }
 
     public List<Car> getFavouriteCarsForUser(String username) {
@@ -81,15 +94,16 @@ public class UserService {
         return user.getCars();
     }
 
-    public void deleteFromFavourite(FavouriteDto dto, String username) {
+    public CarFavouriteDto deleteFromFavourite(FavouriteDto dto, String username) {
         User user = userRepository.findByUserName(username);
         Car car = carRepository.findById(dto.getIdCar()).orElse(null);
         if (user == null || car == null || CollectionUtils.isEmpty(user.getCars())) {
-            return;
+            return null;
         }
         List<Car> cars = user.getCars();
         cars.remove(car);
         user.setCars(cars);
         userRepository.save(user);
+        return carService.getCarById(dto.getIdCar(), username);
     }
 }
