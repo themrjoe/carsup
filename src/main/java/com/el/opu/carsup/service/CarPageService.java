@@ -48,6 +48,13 @@ public class CarPageService {
                 if (!imageLinkRepository.findByLink(imageLink.getLink()).isPresent()){
                     imageLinkRepository.saveAndFlush(imageLink);
                     finalLinks.add(imageLink);
+                } else {
+                    ImageLink repoLink = imageLinkRepository.findByLink(imageLink.getLink()).orElse(null);
+                    if (repoCar.getId() != repoLink.getCar().getId()) {
+                        repoLink.setCar(repoCar);
+                        imageLinkRepository.saveAndFlush(repoLink);
+                        finalLinks.add(repoLink);
+                    }
                 }
             }
             if (CollectionUtils.isNotEmpty(finalLinks)){
