@@ -1,11 +1,13 @@
 package com.el.opu.carsup.controller;
 
 import com.el.opu.carsup.domain.Car;
+import com.el.opu.carsup.domain.dto.CarFavouriteDto;
 import com.el.opu.carsup.domain.dto.FavouriteDto;
 import com.el.opu.carsup.jwt.JwtTokenProvider;
 import com.el.opu.carsup.service.CarService;
 import com.el.opu.carsup.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +37,11 @@ public class EndpointController {
 
     @GetMapping(path = "/cars/{id}")
     @ResponseBody
-    public Car getCarById(@PathVariable Long id) {
-        return carService.getCarById(id);
+    public CarFavouriteDto getCarById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        if (StringUtils.isBlank(token)){
+            return carService.getCarById(id, "");
+        }
+        return carService.getCarById(id, resolveUsernameByToken(token));
     }
 
     @GetMapping(path = "/cars/vehicleTypes")

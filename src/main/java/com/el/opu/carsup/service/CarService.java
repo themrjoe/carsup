@@ -3,10 +3,14 @@ package com.el.opu.carsup.service;
 import com.el.opu.carsup.domain.Car;
 import com.el.opu.carsup.domain.CarPageInfo;
 import com.el.opu.carsup.domain.ImageLink;
+import com.el.opu.carsup.domain.User;
+import com.el.opu.carsup.domain.dto.CarFavouriteDto;
 import com.el.opu.carsup.repository.CarPageRepository;
 import com.el.opu.carsup.repository.CarRepository;
 import com.el.opu.carsup.repository.ImageLinkRepository;
+import com.el.opu.carsup.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +29,52 @@ public class CarService {
 
     private final CarRepository carRepository;
     private final CarPageRepository carPageRepository;
+    private final UserRepository userRepository;
     private final ImageLinkRepository imageLinkRepository;
     private final Clock clock;
 
-    public Car getCarById(Long id) {
-        return carRepository.findById(id).orElse(null);
+    public CarFavouriteDto getCarById(Long id, String username) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car == null) {
+            return null;
+        }
+        boolean favouriteForUser;
+        if (StringUtils.isBlank(username)) {
+            favouriteForUser = false;
+        } else {
+            User user = userRepository.findByUserName(username);
+            if (user == null) {
+                favouriteForUser = false;
+            } else {
+                favouriteForUser = user.getCars().contains(car);
+            }
+        }
+        return CarFavouriteDto.builder()
+                .id(car.getId())
+                .brand(car.getBrand())
+                .model(car.getModel())
+                .series(car.getSeries())
+                .engine(car.getEngine())
+                .fuelType(car.getFuelType())
+                .vehicleType(car.getVehicleType())
+                .primaryDamage(car.getPrimaryDamage())
+                .secondaryDamage(car.getSecondaryDamage())
+                .auctionName(car.getAuctionName())
+                .conditionValue(car.getConditionValue())
+                .odometrValue(car.getOdometrValue())
+                .carYear(car.getCarYear())
+                .saleDate(car.getSaleDate())
+                .lotNumber(car.getLotNumber())
+                .auctionDate(car.getAuctionDate())
+                .buyNowPrice(car.getBuyNowPrice())
+                .ukrainianDate(car.getUkrainianDate())
+                .currentBid(car.getCurrentBid())
+                .canBuyNow(car.isCanBuyNow())
+                .location(car.getLocation())
+                .url(car.getUrl().getUrl())
+                .links(car.getImageLinks().stream().map(ImageLink::getLink).collect(Collectors.toList()))
+                .isFavForUser(favouriteForUser)
+                .build();
     }
 
     public List<Car> getAllCars(int pageNo) {
