@@ -111,7 +111,7 @@ public class UserService {
                     .isFavForUser(favouriteForUser)
                     .build();
         }
-        List<Car> userCars = new ArrayList<>();
+        List<Car> userCars = user.getCars();
         if (userCars.contains(car)) {
             return null;
         }
