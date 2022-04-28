@@ -93,7 +93,6 @@ public class CarService {
     }
 
     public long cleanDb() {
-        List<User> userList = userRepository.findAll();
         List<Car> carToDelete = carRepository.findAllByAuctionDateMillisLessThan(clock.instant().toEpochMilli());
         List<CarPageInfo> infosToDelete = carToDelete.stream()
                 .map(Car::getUrl)
@@ -103,6 +102,10 @@ public class CarService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
+        List<Long> idCars = carToDelete.stream().map(Car::getId).collect(Collectors.toList());
+        for (Long id : idCars) {
+            carRepository.deleteFavouriteCars(id);
+        }
         imageLinkRepository.deleteAll(imagesToDelete);
         carRepository.deleteAll(carToDelete);
         carPageRepository.deleteAll(infosToDelete);
